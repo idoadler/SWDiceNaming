@@ -16,6 +16,11 @@ div {
     background-color: wheat;
 }
 
+img {
+    margin: 0 auto;
+    width: 300px;
+}
+
 ul {
     list-style: none;
     padding: 0;
