@@ -1,20 +1,19 @@
-/*
- bugs:
- 1. word repetition, and strange word choice
- 2. choose random doesn't work correctly, might be due to 1
- */
+let simplified_words;
+let simplified_words_by_length;
+
+function init() {
+  let words = [].concat(data['my_list'], data['countries_list'],
+      data['basic_list'], data['animal_list'],
+      data['descriptions_list'], data['curse_list'], data['sw_list']);
+  words = words.map(v => v.toLowerCase());
+  simplified_words = key_dic(words);
+  simplified_words_by_length = letter_num_dic(simplified_words);
+}
 
 function find() {
-  let words = [].concat(data['my_list'], data['countries_list'],
-                        data['basic_list'], data['animal_list'],
-                        data['descriptions_list'], data['curse_list'], data['sw_list']);
-  let x = key_dic(words);
-  let xx = letter_num_dic(x);
   let dice = document.getElementById('roll').value;
-  let r = find_dice(convert(dice, data['letter_map']), x, xx);
-  let test = JSON.stringify(r);
-  let text = choose_random(r, 3);
-  document.getElementById("results").innerHTML = test;
+  let r = find_dice(convert(dice, data['letter_map']), simplified_words, simplified_words_by_length);
+  document.getElementById("results").innerHTML = choose_random(r, 3);
 }
 
 function convert(word, lettermap) {
@@ -35,7 +34,7 @@ function key_dic(list) {
     let word = list[i];
     let key = convert(word, data['letter_map']);
     if (key in dic) {
-      if (!(word in dic[key])) {
+      if (!dic[key].includes(word)) {
         dic[key].push(word);
       }
     }
@@ -67,8 +66,42 @@ function remove(word, subword){
   return word;
 }
 
-function find_dice(dice, dic, dic_count, max_i=20){
-  let letters = {...dic_count};
+function clone(obj) {
+  let copy;
+
+  // Handle the 3 simple types, and null or undefined
+  if (null == obj || "object" != typeof obj) return obj;
+
+  // Handle Date
+  if (obj instanceof Date) {
+    copy = new Date();
+    copy.setTime(obj.getTime());
+    return copy;
+  }
+
+  // Handle Array
+  if (obj instanceof Array) {
+    copy = [];
+    for (let i = 0, len = obj.length; i < len; i++) {
+      copy[i] = clone(obj[i]);
+    }
+    return copy;
+  }
+
+  // Handle Object
+  if (obj instanceof Object) {
+    copy = {};
+    for (let attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+    }
+    return copy;
+  }
+
+  throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+function find_dice(dice, dic, dic_by_length, max_i=20){
+  let letters = clone(dic_by_length);
   let res = {};
   if (dice in dic && dice.length <= max_i)
     res[1]=dic[dice];
@@ -105,19 +138,23 @@ function shuffle(array) {
 }
 
 function choose_random(words, num) {
-  const keys = Object.keys(words);
+  let keys = Object.keys(words);
+  keys.sort();
   let res = "";
-  for (let repeat = 0; repeat < num-1; repeat++) {
-    let key = random_choice(keys);
+  for (let x = 0; x < num && x < keys.length; x++) {
+    let key = keys[x]
     let curr = words[key];
-    t = [];
-    for(let i = 0; i < key; i++){
+    let t = [];
+    for(let i = 0; i < key - 1; i++){
       let r = random_choice(curr);
       t.push(random_choice(r[0]));
       curr = r[1];
     }
     t.push(random_choice(curr));
     shuffle(t);
-    res += t.join( ) + "\n";
+    res += t.join(" ") + "\n";
   }
+  return res
 }
+
+window.onload = init;
