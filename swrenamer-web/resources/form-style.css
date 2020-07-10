@@ -5,15 +5,16 @@ body {
     background : #222;
 }
 
-div {
+#main-container {
     /* Just to center the form on the page */
     margin: 0 auto;
-    width: 400px;
+    max-width: 600px;
+    width: 80%;
     /* To see the outline of the form */
     padding: 1em;
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     border-radius: 1em;
-    background-color: wheat;
+    background-color: lightslategray;
 }
 
 img {
@@ -33,9 +34,8 @@ li {
 
 label {
     /* To make sure that all labels have the same size and are properly aligned */
-    display: inline-block;
-    width: 90px;
-    text-align: right;
+    display: block;
+    text-align: left;
 }
 
 input,
@@ -43,7 +43,7 @@ textarea {
     /* To make sure that all text fields have the same font settings By default, textareas have a monospace font */
     font: 1em sans-serif;
     /* To give the same size to all text fields */
-    width: 300px;
+    width: 90%;
     box-sizing: border-box; /* To harmonize the look & feel of text field border */
     border: 1px solid #999;
 }
@@ -59,20 +59,7 @@ textarea:focus {
     border-color: #000;
 }
 
-textarea {
-    /* To properly align multiline text fields with their labels */
+#results {
     vertical-align: top;
-    /* To give enough room to type some text */
-    height: 5em;
-}
-
-.button {
-    /* To position the buttons to the same position of the text fields */
-    padding-left: 90px;
-    /* same size as the label elements */
-}
-
-button {
-    /* This extra margin represent roughly the same space as the space between the labels and their text fields */
-    margin-left: 0.5em;
+    height: 6em;
 }
